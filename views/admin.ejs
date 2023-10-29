@@ -1,0 +1,66 @@
+<%- include("./partials/header")  %>
+<!-- <nav class="navbar navbar-light bg-light">
+    <a class="navbar-brand" href="/">Todo App</a>
+</nav> -->
+<nav class="navbar navbar-expand-lg bg-light bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">ToDo App</a>
+      <a href="/logout %>"
+        class="btn btn-secondary btn-sm">Logout</a>
+    </div>
+  </nav>
+
+<div class="container mt-5">
+    <form action="/add/todo" method="POST" class="d-flex">
+        <input type="text" name="todo" class="form-control" placeholder="Enter Todo">
+        <input type="submit" value="Add Todo" class="btn btn-md btn-primary mx-2">
+    </form>
+
+    
+    <ul class="list-group my-5">
+        <h2>Pending ToDos</h2>
+        <% todo.filter(todo => todo.state === 'pending').forEach(todos => { %>
+        <div class="d-flex align-items-center mb-3">
+            <li class="d-flex justify-content-between form-control p-0.5"><%= todos.todo %>
+               
+                    
+            </li>
+            <div class="d-flex gap-3 ml-3">
+                <form action="/complete-todo/<%= todos._id %>?_method=PUT" method="POST">
+                    <input type="submit" name="Complete ToDo" class="btn btn-primary btn-sm" value="Complete Todo">
+                </form>
+                <a href="/delete/todo/<%= todos._id %>"
+                    class="btn btn-danger btn-sm ml-3">Delete</a>
+               </div>
+        </div>
+
+        <% }) %>
+
+    </ul>
+    <ul class="list-group my-5">
+        <h2>Completed ToDos</h2>
+        <% todo.filter(todo => todo.state === 'completed').forEach(todos => { %>
+        <div class="d-flex gap-3 mb-3">
+            <li class="d-flex justify-content-between form-control p-0.5"><%= todos.todo %> 
+               
+                    
+            </li>
+            <div class="d-flex gap-3 ml-3 align-items-center">
+                <form action="/renew-todo/<%= todos._id %>?_method=PUT" method="POST" >
+                    <input type="submit" name="Complete ToDo" class="btn btn-primary btn-sm" value="Renew Todo">
+                </form>
+                <a href="/delete/todo/<%= todos._id %>"
+                    class="btn btn-danger btn-sm ml-3">Delete</a>
+            </div>
+        </div>
+
+        <% }) %>
+
+    </ul>
+</div>
+
+
+
+
+
+<%- include("./partials/footer")  %>
