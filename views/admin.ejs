@@ -20,12 +20,12 @@
     <ul class="list-group my-5">
         <h2>Pending ToDos</h2>
         <% todo.filter(todo => todo.state === 'pending').forEach(todos => { %>
-        <div class="d-flex align-items-center mb-3">
+        <div class="d-flex gap-3 mb-3">
             <li class="d-flex justify-content-between form-control p-0.5"><%= todos.todo %>
                
                     
             </li>
-            <div class="d-flex gap-3 ml-3">
+            <div class="d-flex gap-3 ml-3 align-items-center">
                 <form action="/complete-todo/<%= todos._id %>?_method=PUT" method="POST">
                     <input type="submit" name="Complete ToDo" class="btn btn-primary btn-sm" value="Complete Todo">
                 </form>
