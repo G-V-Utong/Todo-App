@@ -1,6 +1,7 @@
 const router = require("express").Router()
 const Todo = require("../models/Todo");
 const User = require('../models/User');
+const authMiddleware = require('../middleware/authMiddleware');
 
 // routes will be here....
 router.get("/", async(req, res) => {
@@ -8,15 +9,15 @@ router.get("/", async(req, res) => {
     res.render("index", {todo: allTodo})
 })
 
-router.get("/admin", async(req, res) => {
+router.get("/admin", authMiddleware, async(req, res) => {
     const authorId = req.userId;
     const user = await User.findOne({ _id: authorId });
     // const username = `${user.username}`;
-    console.log(user);
+    //console.log(user.username);
     const allTodo = await Todo.find(
-        // {
-        //     author: username,
-        // }
+        {
+            author: authorId,
+        }
     );
     res.render("admin", {todo: allTodo})
 })

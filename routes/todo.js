@@ -8,23 +8,24 @@ const {logger} = require("./logger");
 const { log } = require("winston");
 require('dotenv');
 const jwtSecret = process.env.JWT_SECRET;
+const authMiddleware = require('../middleware/authMiddleware')
 
-const authMiddleware = (req, res, next) => {
-    const token =  req.cookies.token;
+// const authMiddleware = (req, res, next) => {
+//     const token =  req.cookies.token;
   
-    if(!token) {
-      return res.status(401).json({message: 'You are not signed in'});
-    }
+//     if(!token) {
+//       return res.status(401).json({message: 'You are not signed in'});
+//     }
   
-    try {
-      const decoded = jwt.verify(token, jwtSecret);
-      req.userId = decoded.userId;
-      next();
-    } catch (error) {
-      console.log(error);
-      res.status(401).json( { message: 'unauthorized' });
-    }
-};
+//     try {
+//       const decoded = jwt.verify(token, jwtSecret);
+//       req.userId = decoded.userId;
+//       next();
+//     } catch (error) {
+//       console.log(error);
+//       res.status(401).json( { message: 'unauthorized' });
+//     }
+// };
 
 // GET - Login
 router.get('/login', async (req, res) => {
@@ -108,9 +109,15 @@ router.post('/signup', async (req, res) => {
 
 // routes
 // POST - add todo
-router.post("/add/todo", async (req, res) => {
+router.post("/add/todo", authMiddleware, async (req, res) => {
     const { todo } = req.body;
-    const newTodo = await new Todo({ todo });
+    const  authorId  = req.userId;
+    const user = await User.findOne( { _id: authorId } );
+
+    // console.log(authorId);
+    // console.log(user);
+    // let author = `${user.username}`;
+    const newTodo = await new Todo({ todo, author: authorId });
 
     // save the todo
     await newTodo
@@ -124,7 +131,7 @@ router.post("/add/todo", async (req, res) => {
 });
 
 //GET - Edit todo
-router.get("/edit-todo/:id", async(req, res) => {
+router.get("/edit-todo/:id", authMiddleware, async(req, res) => {
     const authorId = req.userId;
     const user = await User.findOne({ _id: authorId });
     
@@ -162,7 +169,7 @@ router.put('/renew-todo/:id', authMiddleware, async (req, res) => {
 
 //GET - Delete Todo
 
-router.get("/delete/todo/:_id", (req, res) => {
+router.get("/delete/todo/:_id", authMiddleware, (req, res) => {
     const { _id } = req.params;
     Todo.deleteOne({ _id })
       .then(() => {
@@ -171,6 +178,12 @@ router.get("/delete/todo/:_id", (req, res) => {
         res.redirect("/admin");
       })
       .catch((err) => console.log('error', err));
+});
+
+router.get('/logout', (req, res) => {
+  res.clearCookie('token');
+  console.log('Logout successful.');
+  res.redirect('/');
 });
 
 module.exports = router;
