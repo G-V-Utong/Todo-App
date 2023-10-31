@@ -34,7 +34,7 @@ TaskMaster Pro is a simple to-do application built with Node.js, Express, and Mo
    `git clone https://github.com/your-username/taskmaster-pro.git`
 2. Install the project dependencies.
    `npm install`
-3. Configure your environment variables. Create a .env file and add your configuration details, such as database connection settings and secret keys.
+3. Configure your environment variables. Create a `.env` file and add your configuration details, such as database connection settings and secret keys.
 4. Start the application.
    `npm start`
    
